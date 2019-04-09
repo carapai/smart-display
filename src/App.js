@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import D2UIApp from '@dhis2/d2-ui-app';
-import HeaderBar from '@dhis2/d2-ui-header-bar';
+import HeaderBar from '@dhis2/ui/widgets/HeaderBar';
 
 class App extends Component {
   constructor(props) {
@@ -20,9 +18,7 @@ class App extends Component {
   render() {
     const {d2, baseUrl} = this.props;
     return (
-        <D2UIApp>
-          <HeaderBar d2={d2} className="app-header" />
-        </D2UIApp>
+          <HeaderBar  appName={'DHIS2 Smart Display'} />
     );
   }
 }

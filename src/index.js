@@ -8,7 +8,7 @@ import {init, config} from 'd2/d2'
 let baseUrl = '';
 // let appUrl = '';
 if (process.env.NODE_ENV === 'development') {
-    baseUrl = 'http://localhost';
+    baseUrl = 'http://localhost/sdisplay/';
     // appUrl = 'http://localhost:3000'
     config.headers = {Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q='};
 
