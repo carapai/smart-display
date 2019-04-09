@@ -1,43 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import {init as d2Init, config, getManifest, getUserSettings} from 'd2';
+
+// temporary workaround until new ui headerbar is ready
+import 'material-design-icons/iconfont/material-icons.css';
+import './reset.css';
+
 import App from './App';
-import * as serviceWorker from './serviceWorker';
-import {init, config} from 'd2/d2'
+import './index.css';
 
-let baseUrl = '';
-// let appUrl = '';
-if (process.env.NODE_ENV === 'development') {
-    baseUrl = 'http://localhost/sdisplay/';
-    // appUrl = 'http://localhost:3000'
-    config.headers = {Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q='};
 
-} else {
-    let urlArray = window.location.pathname.split('/');
-    let apiIndex = urlArray.indexOf('api');
-    if (apiIndex > 1) {
-        baseUrl = '/' + urlArray[apiIndex - 1] + '/';
-        // appUrl = '/' + urlArray[apiIndex - 1];
-    } else {
-        baseUrl = '/';
+const init = async () => {
+    const manifest = await getManifest(`${process.env.PUBLIC_URL}/manifest.webapp`);
+    // log app info
+    console.info(`DHIS2 Smart Display app, v${manifest.version}, ${manifest.manifest_generated_at}`);
+
+    const isProd = process.env.NODE_ENV === 'production';
+
+    if (!isProd && (!process.env.REACT_APP_DHIS2_BASE_URL || !process.env.REACT_APP_DHIS2_AUTHORIZATION)) {
+        throw new Error('Missing env variables REACT_APP_DHIS2_BASE_URL and REACT_APP_DHIS2_AUTHORIZATION');
     }
+    // api config
+    const baseUrl = isProd
+        ? manifest.activities.dhis.href
+        : process.env.REACT_APP_DHIS2_BASE_URL;
+    const authorization = process.env.REACT_APP_DHIS2_AUTHORIZATION;
 
-    baseUrl = window.location.protocol + '//' + window.location.host + baseUrl;
-}
+    console.log(manifest);
 
-// api config
-// const isProd = process.env.NODE_ENV === 'production';
-// const baseUrl = isProd
-//     ? manifest.activities.dhis.href
-//     : DHIS_CONFIG.baseUrl;
+    config.baseUrl = `${baseUrl}`;
+    config.headers = isProd ? null : {Authorization: authorization};
 
-config.baseUrl = `${baseUrl}api`;
+    console.log(config);
 
-init(config)
-    .then(d2 => {
-        ReactDOM.render(
-            <App d2={d2} baseUrl={baseUrl}/>, document.getElementById('root'));
-    })
-    .catch(err => console.error(err));
+    getUserSettings()
+        .then(() => d2Init(config))
+        .then(initializedD2 => {
+            ReactDOM.render(
+                <App baseUrl={baseUrl} d2={initializedD2}/>,
+                document.getElementById('root')
+            );
+        });
+};
 
-serviceWorker.unregister();
+init();

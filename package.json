@@ -5,15 +5,40 @@
   "dependencies": {
     "@dhis2/ui": "^1.0.0-beta.15",
     "d2": "^31.7.0",
+    "material-design-icons": "^3.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8"
   },
+  "manifest.webapp": {
+    "name": "DHIS2 Smart Display",
+    "description": "DHIS2 Smart Display",
+    "appType": "APP",
+    "api": {
+      "version": "30"
+    },
+    "icons": {
+      "48": "favicon.ico"
+    },
+    "developer": {
+      "url": "",
+      "name": "DHIS2"
+    },
+    "activities": {
+      "dhis": {
+        "href": "../..",
+        "version": "30"
+      }
+    }
+  },
   "scripts": {
+    "prestart": "npm run manifest",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "prebuild": "rm -rf build && mkdir build && npm run manifest",
+    "build": "PUBLIC_URL=./ react-scripts build && cd build && zip -r -D smart-display.zip .",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "manifest": "d2-manifest package.json ./public/manifest.webapp"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -23,5 +48,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "d2-manifest": "^1.0.0"
+  }
 }
