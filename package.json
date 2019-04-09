@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@dhis2/d2-ui-app": "^2.0.0",
+    "@dhis2/d2-ui-core": "^5.3.0",
+    "@dhis2/d2-ui-header-bar": "^5.3.0",
+    "d2": "^31.7.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8"
